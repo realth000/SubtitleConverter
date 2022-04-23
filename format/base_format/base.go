@@ -19,6 +19,7 @@ type TimeFormat struct {
 }
 
 type SubtitleFormat struct {
-	Time TimeFormat
-	Data string
+	Index int // for srt format.
+	Time  TimeFormat
+	Data  string
 }

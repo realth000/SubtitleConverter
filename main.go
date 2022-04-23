@@ -16,4 +16,14 @@ func main() {
 	for _, r := range result {
 		fmt.Printf("%s -> %s : %s\n", r.Time.StartTime.ToString(), r.Time.EndTime.ToString(), r.Data)
 	}
+
+	result2, err := format.ParseSrt(testSrtFile)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// Test srt output.
+	for _, r := range result2 {
+		fmt.Printf("%s -> %s : %s\n", r.Time.StartTime.ToString(), r.Time.EndTime.ToString(), r.Data)
+	}
 }
