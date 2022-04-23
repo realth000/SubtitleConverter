@@ -25,7 +25,7 @@ var (
 func (s *SrtTime) FromSrtTime(srtTime string) error {
 	matches := TimeParseRegexp.FindStringSubmatch(srtTime)
 	// Check if line is valid.
-	if len(matches) < 8 {
+	if len(matches) < TimeParseRegexp.NumSubexp()+1 {
 		return errors.New(errorInvalidTime)
 	}
 	s.StartTime.Hour = matches[TimeParseRegexp.SubexpIndex("SHour")]

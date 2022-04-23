@@ -2,6 +2,7 @@ package lrc
 
 import (
 	"SubtitleConverter/format/base_format"
+	"errors"
 	"regexp"
 )
 
@@ -10,28 +11,44 @@ type LrcTime struct {
 }
 
 var (
-	ParseRegexp     = regexp.MustCompile(`^(?P<Time>\[\d{2}:\d{2}\.\d{2}\])(?P<Data>.*)`)
-	TimeParseRegexp = regexp.MustCompile(`(?P<Min>\d{2}):(?P<Sec>\d{2})\.(?P<MSec>\d{2})`)
+	ParseRegexp      = regexp.MustCompile(`^(?P<Time>\[\d{2}:\d{2}\.\d{2}\])(?P<Data>.*)`)
+	TimeParseRegexp  = regexp.MustCompile(`(?P<Min>\d{2}):(?P<Sec>\d{2})\.(?P<MSec>\d{2})`)
+	errorInvalidTime = `error: invalid lrc format time line`
+	errorInvalidLine = `error: invalid lrc format line`
 )
 
-func (b *LrcTime) FromLrcTime(lrcTime string) {
+func (l *LrcTime) FromLrcTime(lrcTime string) error {
 
-	b.Hour = "00"
 	matches := TimeParseRegexp.FindStringSubmatch(lrcTime)
-	b.Min = matches[TimeParseRegexp.SubexpIndex("Min")]
-	b.Sec = matches[TimeParseRegexp.SubexpIndex("Sec")]
-	b.MSec = matches[TimeParseRegexp.SubexpIndex("MSec")]
+	if len(matches) < TimeParseRegexp.NumSubexp()+1 {
+		return errors.New(errorInvalidTime)
+	}
+	l.Hour = "00"
+	l.Min = matches[TimeParseRegexp.SubexpIndex("Min")]
+	l.Sec = matches[TimeParseRegexp.SubexpIndex("Sec")]
+	l.MSec = matches[TimeParseRegexp.SubexpIndex("MSec")]
+	return nil
 }
 
-func ParseLrcLine(lrc string) (time LrcTime, data string) {
+func (l *LrcTime) IsEmpty() bool {
+	if l.Hour == "" && l.Min == "" && l.Sec == "" && l.MSec == "" {
+		return true
+	}
+	return false
+}
+
+func ParseLrcLine(lrc string) (LrcTime, string, error) {
 	matches := ParseRegexp.FindStringSubmatch(lrc)
 	if len(matches) < 2 {
 		// TODO: Parse a invalid format line here.
 		// fmt.Println("error parsing lrc line: invalid format")
-		return LrcTime{}, ""
+		return LrcTime{}, "", errors.New(errorInvalidTime)
 	}
-	var b LrcTime
-	b.FromLrcTime(matches[ParseRegexp.SubexpIndex("Time")])
+	var l LrcTime
+	err := l.FromLrcTime(matches[ParseRegexp.SubexpIndex("Time")])
+	if err != nil {
+		return LrcTime{}, "", errors.New(errorInvalidLine)
+	}
 	d := matches[ParseRegexp.SubexpIndex("Data")]
-	return b, d
+	return l, d, nil
 }

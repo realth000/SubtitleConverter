@@ -33,7 +33,12 @@ func ParseLrc(filePath string) []SubtitleFormat {
 
 	// Handle the first line.
 	if lrcScanner.Scan() {
-		firstTime, firstData := lrc.ParseLrcLine(lrcScanner.Text())
+		firstTime, firstData, err := lrc.ParseLrcLine(lrcScanner.Text())
+		if err != nil && firstData != "" {
+			// First line failed.
+			fmt.Println(err)
+			return []SubtitleFormat{}
+		}
 		result = append(result, SubtitleFormat{
 			Time: TimeFormat{StartTime: firstTime.BaseTime},
 			Data: firstData,
@@ -43,7 +48,11 @@ func ParseLrc(filePath string) []SubtitleFormat {
 	// Handle middle lines.
 	var lastLineBehind = 0
 	for lrcScanner.Scan() {
-		t, d := lrc.ParseLrcLine(lrcScanner.Text())
+		t, d, err := lrc.ParseLrcLine(lrcScanner.Text())
+		if err != nil && d != "" {
+			fmt.Println(err)
+			continue
+		}
 		var s = SubtitleFormat{Time: TimeFormat{StartTime: t.BaseTime}, Data: d}
 		result = append(result, s)
 		result[lastLineBehind].Time.EndTime = t.BaseTime
