@@ -30,6 +30,10 @@ func ParseLrc(filePath string) []SubtitleFormat {
 	lrcScanner := bufio.NewScanner(lrcFile)
 
 	var result []SubtitleFormat
+	/*
+		FIXME: lrcLineIndex represents the line index of all valid lines(exclude empty lines),
+			Not the line index of the whole lrc file.
+	*/
 	var lrcLineIndex = 0
 
 	// Handle the first line.
@@ -52,6 +56,10 @@ func ParseLrc(filePath string) []SubtitleFormat {
 	var lastLineBehind = 0
 	for lrcScanner.Scan() {
 		lrcLineIndex++
+		// Skip empty lines.
+		if lrcScanner.Text() == "" {
+			continue
+		}
 		t, d, err := lrc.ParseLrcLine(lrcScanner.Text())
 		if err != nil && d != "" {
 			fmt.Println(err)
