@@ -143,7 +143,7 @@ func ToLrc(subs []SubtitleFormat) []string {
 func ToSrt(subs []SubtitleFormat) []string {
 	var result []string
 	for _, sub := range subs {
-		result = append(result, strconv.Itoa(sub.Index), srt.ToSrtTime(sub.Time), sub.Data)
+		result = append(result, strconv.Itoa(sub.Index), srt.ToSrtTime(sub.Time), sub.Data, "")
 	}
 
 	return result
