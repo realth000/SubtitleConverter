@@ -29,10 +29,14 @@ func main() {
 
 	result := format.ToSrt(format.ParseLrc(testLrcFile))
 	// Test lrc output.
-	fmt.Println(result)
+	for _, r := range result {
+		fmt.Println(r)
+	}
 
 	t, _ := format.ParseSrt(testSrtFile)
 	result2 := format.ToLrc(t)
-	fmt.Println(result2)
+	for _, r := range result2 {
+		fmt.Println(r)
+	}
 
 }

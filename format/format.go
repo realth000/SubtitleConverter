@@ -30,9 +30,11 @@ func ParseLrc(filePath string) []SubtitleFormat {
 	lrcScanner := bufio.NewScanner(lrcFile)
 
 	var result []SubtitleFormat
+	var lrcLineIndex = 0
 
 	// Handle the first line.
 	if lrcScanner.Scan() {
+		lrcLineIndex++
 		firstTime, firstData, err := lrc.ParseLrcLine(lrcScanner.Text())
 		if err != nil && firstData != "" {
 			// First line failed.
@@ -40,20 +42,22 @@ func ParseLrc(filePath string) []SubtitleFormat {
 			return []SubtitleFormat{}
 		}
 		result = append(result, SubtitleFormat{
-			Time: TimeFormat{StartTime: firstTime.BaseTime},
-			Data: firstData,
+			Index: lrcLineIndex,
+			Time:  TimeFormat{StartTime: firstTime.BaseTime},
+			Data:  firstData,
 		})
 	}
 
 	// Handle middle lines.
 	var lastLineBehind = 0
 	for lrcScanner.Scan() {
+		lrcLineIndex++
 		t, d, err := lrc.ParseLrcLine(lrcScanner.Text())
 		if err != nil && d != "" {
 			fmt.Println(err)
 			continue
 		}
-		var s = SubtitleFormat{Time: TimeFormat{StartTime: t.BaseTime}, Data: d}
+		var s = SubtitleFormat{Index: lrcLineIndex, Time: TimeFormat{StartTime: t.BaseTime}, Data: d}
 		result = append(result, s)
 		result[lastLineBehind].Time.EndTime = t.BaseTime
 		lastLineBehind++
