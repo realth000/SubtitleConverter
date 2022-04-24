@@ -135,7 +135,7 @@ func ParseSrt(filePath string) ([]SubtitleFormat, error) {
 func ToLrc(subs []SubtitleFormat) []string {
 	var result []string
 	for _, sub := range subs {
-		result = append(result, lrc.ToLrcTime(sub.Time.StartTime), sub.Data)
+		result = append(result, fmt.Sprintf("%s%s", lrc.ToLrcTime(sub.Time.StartTime), sub.Data))
 	}
 	return result
 }
