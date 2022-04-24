@@ -3,6 +3,7 @@ package srt
 import (
 	"SubtitleConverter/format/base_format"
 	"errors"
+	"fmt"
 	"regexp"
 )
 
@@ -38,4 +39,8 @@ func (s *SrtTime) FromSrtTime(srtTime string) error {
 	s.EndTime.MSec = matches[TimeParseRegexp.SubexpIndex("EMSec")]
 
 	return nil
+}
+
+func ToSrtTime(base base_format.TimeFormat) string {
+	return fmt.Sprintf("%s%s%s", base.StartTime.ToSrtFormat(), timeSeparator, base.EndTime.ToSrtFormat())
 }

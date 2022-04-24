@@ -93,6 +93,7 @@ func ParseSrt(filePath string) ([]SubtitleFormat, error) {
 			return []SubtitleFormat{}, makeParseSrtError(errorInvalidIndex)
 		}
 		s.Index = index
+
 		if !srtScanner.Scan() {
 			return []SubtitleFormat{}, makeParseSrtError(errorEOF)
 		}
@@ -125,4 +126,21 @@ func ParseSrt(filePath string) ([]SubtitleFormat, error) {
 	}
 
 	return result, nil
+}
+
+func ToLrc(subs []SubtitleFormat) []string {
+	var result []string
+	for _, sub := range subs {
+		result = append(result, lrc.ToLrcTime(sub.Time.StartTime), sub.Data)
+	}
+	return result
+}
+
+func ToSrt(subs []SubtitleFormat) []string {
+	var result []string
+	for _, sub := range subs {
+		result = append(result, strconv.Itoa(sub.Index), srt.ToSrtTime(sub.Time), sub.Data)
+	}
+
+	return result
 }

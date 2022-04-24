@@ -3,6 +3,7 @@ package lrc
 import (
 	"SubtitleConverter/format/base_format"
 	"errors"
+	"fmt"
 	"regexp"
 )
 
@@ -51,4 +52,8 @@ func ParseLrcLine(lrc string) (LrcTime, string, error) {
 	}
 	d := matches[ParseRegexp.SubexpIndex("Data")]
 	return l, d, nil
+}
+
+func ToLrcTime(base base_format.BaseTime) string {
+	return fmt.Sprintf("[%s]", base.ToLrcFormat())
 }
