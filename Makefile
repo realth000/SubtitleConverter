@@ -17,4 +17,5 @@ binary:
 	$(GO_CMD) build --buildmode=exe --buildmode=pie -ldflags $(GO_LDFLAGS) -o $(TARGET_BINARY) $(SOURCES)
 
 .PHONY: clean
-clean: $(RM) $(TARGET_BINARY)
+clean: 
+	$(RM) $(TARGET_BINARY)
